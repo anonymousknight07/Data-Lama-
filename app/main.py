@@ -26,7 +26,7 @@ async def ask(question: str = Form(...)):
     sources = researcher_job(query, top_k_sites=5)
     try:
         final_answer = synthesize_from_sources(question, sources)
-        return JSONResponse({"ok": True, "answer": final_answer})
+        return JSONResponse({"ok": True, **final_answer})
     except Exception as e:
         return JSONResponse({"ok": False, "error": str(e)}, status_code=500)
 

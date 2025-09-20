@@ -3,7 +3,7 @@ import requests
 from app.utils import build_citation_list
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
-MODEL = "deepseek/deepseek-r1-0528-qwen3-8b:free"
+MODEL = "nvidia/nemotron-nano-9b-v2:free"
 
 
 def get_api_key():
