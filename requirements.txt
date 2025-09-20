@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+requests
+newspaper3k
+python-dotenv
+jinja2
+lxml_html_clean
+python-multipart
