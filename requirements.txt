@@ -6,3 +6,9 @@ python-dotenv
 jinja2
 lxml_html_clean
 python-multipart
+flask
+requests
+beautifulsoup4
+lxml
+python-dotenv
+tqdm

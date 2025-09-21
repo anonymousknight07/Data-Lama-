@@ -22,3 +22,19 @@ def build_citation_list(sources: List[dict]) -> List[str]:
         title = s.get("title") or s.get("url")
         citations.append(f"[{i}] {title} — {s.get('url')}")
     return citations
+
+def format_superscripts(text: str, citations: list) -> str:
+    """
+    Replace [i] markers in the answer with HTML superscript citation links.
+    Example: "RICE model [1]" → RICE model<sup><a href="url">[1]</a></sup>
+    """
+    formatted = text
+    for i, c in enumerate(citations, start=1):
+        # Extract URL from the citation string "[i] title — url"
+        parts = c.split("—")
+        url = parts[-1].strip() if len(parts) > 1 else "#"
+        formatted = formatted.replace(
+            f"[{i}]",
+            f'<sup><a href="{url}" target="_blank" rel="noopener">[{i}]</a></sup>'
+        )
+    return formatted
