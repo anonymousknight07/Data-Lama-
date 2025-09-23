@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-load_dotenv()  # load .env before anything else
+load_dotenv()  
 
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, JSONResponse

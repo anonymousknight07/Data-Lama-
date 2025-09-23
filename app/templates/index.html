@@ -5,11 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Autonomous Business Analyst</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Inter', sans-serif;
@@ -23,8 +19,7 @@
       color: #000000;
     }
 
-   /* Editorial font styling for homepage */
-#homepage .main-title {
+   #homepage .main-title {
   font-family: "PP Editorial New Ultralight", "PP Editorial New Ultralight Placeholder", serif;
   font-size: clamp(2.5rem, 6vw, 4rem);
   line-height: 1.1;
@@ -42,27 +37,16 @@
   font-weight: 300;
 }
 
-
-    .container {
-      max-width: 800px;
-      width: 100%;
-      text-align: center;
-    }
+    .container { max-width: 800px; width: 100%; text-align: center; }
 
     .main-title {
-      font-size: clamp(2rem, 4vw, 3.5rem);
-      font-weight: 700;
-      color: #000000;
-      margin-bottom: 2rem;
-      letter-spacing: -0.02em;
+      font-size: clamp(2.5rem, 6vw, 4rem);
       line-height: 1.1;
+      font-weight: 300;
+      color: #111;
     }
 
-    .search-section {
-      position: relative;
-      margin-bottom: 3rem;
-    }
-
+    .search-section { position: relative; margin-bottom: 3rem; }
     .search-container {
       position: relative;
       max-width: 600px;
@@ -71,17 +55,6 @@
       border-radius: 25px;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
       overflow: hidden;
-      transition: all 0.3s ease;
-    }
-
-    .search-container:hover {
-      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
-      transform: translateY(-2px);
-    }
-
-    .search-container:focus-within {
-      box-shadow: 0 15px 50px rgba(79, 70, 229, 0.2);
-      transform: translateY(-2px);
     }
 
     .search-input {
@@ -91,67 +64,44 @@
       font-size: 1.1rem;
       background: transparent;
       outline: none;
-      color: #000000;
+      color: #000;
       line-height: 1.5;
       min-height: 60px;
       resize: none;
       font-family: inherit;
     }
 
-    .search-input::placeholder {
-      color: #666666;
-      font-weight: 400;
-    }
-
-    .search-button {
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 44px;
-      height: 44px;
-      border: none;
-      border-radius: 50%;
-      background: #000000;
-      color: white;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      .search-button {
+      position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+      width: 50px; height: 50px; border: none; border-radius: 50%;
+      background: #000; color: #fff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
       transition: all 0.2s ease;
+    }
+    .search-button:hover { background: #333; }
+    .search-button:active { 
+      background: #000; 
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+      transform: translateY(-50%) scale(0.95);
+    }
+
+    #searchIcon {
       font-size: 1.2rem;
+      font-weight: bold;
+      line-height: 1;
+      transition: all 0.2s ease;
     }
-
-    .search-button:hover:not(:disabled) {
-      transform: translateY(-50%) scale(1.05);
-      background: #333333;
-    }
-
-    .search-button:disabled {
-      background: #cbd5e0;
-      cursor: not-allowed;
-      transform: translateY(-50%);
-    }
-
     .chat-area {
-      display: none;
-      max-width: 800px;
-      width: 100%;
-      background: white;
-      border-radius: 20px;
+      display: none; max-width: 800px; width: 100%;
+      background: white; border-radius: 20px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-      margin-top: 2rem;
-      overflow: hidden;
-      min-height: 400px;
+      margin-top: 2rem; overflow: hidden; min-height: 400px;
     }
 
     .chat-header {
-      background: #000000;
-      color: white;
-      padding: 20px;
-      text-align: center;
-      font-weight: 600;
-      border-bottom: 1px solid #e2e8f0;
+      background: #000; color: white;
+      padding: 20px; text-align: center;
+      font-weight: 600; border-bottom: 1px solid #e2e8f0;
     }
 
     .chat-messages {
@@ -162,138 +112,237 @@
       overflow-wrap: anywhere;
     }
 
-    .message {
-      margin-bottom: 20px;
-      padding: 16px 20px;
-      border-radius: 16px;
-      max-width: 100%;
-    }
+    .message { margin-bottom: 20px; padding: 16px 20px; border-radius: 16px; max-width: 100%; }
+    .user-message { background: #000; color: white; margin-left: auto; text-align: right; }
+    .assistant-message { background: #fafafa; color: #2d3748; border: 1px solid #e2e8f0; line-height: 1.7; text-align: left; }
 
-    .user-message {
-      background: #000000;
-      color: white;
-      margin-left: auto;
-      text-align: right;
-    }
-
-    .assistant-message {
-      background: #fafafa;
-      color: #2d3748;
-      border: 1px solid #e2e8f0;
-      line-height: 1.7;
-      text-align: left;
-    }
-
-    .assistant-message p {
-      margin-bottom: 16px;
-      line-height: 1.7;
-      text-align: left;
-    }
-
-    .assistant-message p:last-child {
-      margin-bottom: 0;
-    }
-
+   
+    /* Enhanced Table Styling */
     .assistant-message table {
-      width: 100%;
+      width: 100%; 
       border-collapse: collapse;
-      margin: 16px 0;
+      margin: 20px 0; 
       font-size: 0.9rem;
-      display: block;
-      overflow-x: auto;
-      white-space: nowrap;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
-
-    .assistant-message th,
-    .assistant-message td {
-      border: 1px solid #e2e8f0;
-      padding: 8px 12px;
-      text-align: left;
-    }
-
+    
     .assistant-message th {
-      background: #f1f5f9;
-      font-weight: 600;
-    }
-
-    .assistant-message td {
-      background: #ffffff;
-    }
-
-    .sources-section {
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid #e2e8f0;
+      background: black;
+      color: white;
+      padding: 15px 12px;
       text-align: left;
+      font-weight: 600;
+      border: none;
+      font-size: 0.95rem;
+    }
+    
+    .assistant-message td {
+      background: #fff;
+      padding: 12px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    
+    .assistant-message tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .assistant-message tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+    
+    .assistant-message tr:hover td {
+      background: #e6fffa;
+      transition: background-color 0.2s ease;
+    }
+
+    /* Enhanced Sources Section */
+    .sources-section {
+      margin-top: 25px; 
+      padding-top: 20px;
+      border-top: 2px solid #e2e8f0;
+      text-align: left; 
       word-break: break-word;
     }
-
+    
     .sources-title {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #4a5568;
-      margin-bottom: 10px;
+      font-size: 1.1rem; 
+      font-weight: 700;
+      color: #4a5568; 
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-
+    
     .source-item {
-      background: #f8fafc;
+      background: linear-gradient(135deg, #f8fafc, #ffffff);
       border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 10px 12px;
-      margin-bottom: 8px;
-      font-size: 0.85rem;
+      border-radius: 12px; 
+      padding: 15px;
+      margin-bottom: 12px; 
+      font-size: 0.9rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease;
     }
-
+    
+    .source-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
     .source-link {
-      color: #000000;
-      text-decoration: none;
-      word-break: break-all;
+      color: #667eea;
+      text-decoration: none; 
+      word-break: break-all; 
       font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    
+    .source-link:hover { 
+      color: #5a67d8;
+      text-decoration: underline; 
+    }
+    
+    .source-title {
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 5px;
     }
 
-    .source-link:hover {
-      text-decoration: underline;
+    /* Superscript Citation Links */
+    .assistant-message sup {
+      font-size: 0.75em;
+      line-height: 0;
+      position: relative;
+      vertical-align: baseline;
+      top: -0.5em;
+    }
+    
+    .assistant-message sup a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 2px 4px;
+      border-radius: 4px;
+      background: rgba(102, 126, 234, 0.1);
+      transition: all 0.2s ease;
+    }
+    
+    .assistant-message sup a:hover {
+      background: rgba(102, 126, 234, 0.2);
+      color: #5a67d8;
+      text-decoration: none;
+    }
+
+    /* Enhanced Code Styling */
+    pre {
+      background: #1a202c;
+      color: #e2e8f0;
+      padding: 20px;
+      border-radius: 12px;
+      overflow-x: auto;
+      margin: 20px 0;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      border-left: 4px solid #667eea;
+    }
+    
+    code { 
+      font-family: "Fira Code", "Monaco", "Cascadia Code", monospace;
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #e53e3e;
+      font-size: 0.9em;
+    }
+    
+    pre code {
+      background: none;
+      padding: 0;
+      color: inherit;
+    }
+
+    /* Loading Animation */
+    .loading {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .loading::after {
+      content: "";
+      width: 20px;
+      height: 20px;
+      border: 2px solid #e2e8f0;
+      border-top: 2px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Scrollbar Styling */
+    .chat-messages::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .chat-messages::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 4px;
+    }
+    
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: #cbd5e0;
+      border-radius: 4px;
+    }
+    
+    .chat-messages::-webkit-scrollbar-thumb:hover {
+      background: #a0aec0;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div id="homepage">
-<h1 class="main-title">
-  <span class="editorial">What</span> 
-  <span class="editorial-italic">can</span> 
-  <span class="editorial">I help with?</span>
-</h1>
-
+      <h1 class="main-title">
+        <span class="editorial">What</span> 
+        <span class="editorial-italic">can</span> 
+        <span class="editorial">I help with?</span>
+      </h1>
       <div class="search-section">
         <form id="searchForm">
           <div class="search-container">
-            <textarea id="searchInput" class="search-input" placeholder="Ask anything..." rows="1" required></textarea>
+            <textarea id="searchInput" class="search-input" placeholder="Ask anything ... " rows="1" required></textarea>
             <button type="submit" class="search-button" id="searchButton">
-              <span id="searchIcon">↑</span>
+              <span id="searchIcon">➜</span>
             </button>
           </div>
         </form>
       </div>
     </div>
 
+   
     <div class="chat-area" id="chatArea">
-      <div class="chat-header">
-        <h3>Autonomous Business Analyst</h3>
-      </div>
       <div class="chat-messages" id="chatMessages"></div>
     </div>
   </div>
 
   <script>
-  const searchForm = document.getElementById('searchForm');
+    const searchForm = document.getElementById('searchForm');
     const searchInput = document.getElementById('searchInput');
     const chatArea = document.getElementById('chatArea');
     const chatMessages = document.getElementById('chatMessages');
 
     let isLoading = false;
 
-    // Auto-resize textarea
     searchInput.addEventListener('input', function () {
       this.style.height = 'auto';
       this.style.height = Math.min(this.scrollHeight, 120) + 'px';
@@ -315,19 +364,12 @@
         const formData = new FormData();
         formData.append('question', question);
 
-        const response = await fetch('/ask', {
-          method: 'POST',
-          body: formData
-        });
-
+        const response = await fetch('/ask', { method: 'POST', body: formData });
         const data = await response.json();
-        hideLoading();
 
-        if (data.ok) {
-          addAssistantMessage(data.answer, data.citations);
-        } else {
-          addErrorMessage(data.error || 'Error occurred.');
-        }
+        hideLoading();
+        if (data.ok) addAssistantMessage(data.answer, data.citations);
+        else addErrorMessage(data.error || 'Error occurred.');
       } catch (error) {
         hideLoading();
         addErrorMessage('Failed to connect to the server.');
@@ -345,27 +387,63 @@
     function addAssistantMessage(answer, citations) {
       const div = document.createElement('div');
       div.className = 'message assistant-message';
+
       let sourcesHtml = '';
       if (citations && citations.length > 0) {
-        const items = citations.map(c => {
-          const match = c.match(/^\[(\d+)\]\s*(.+?)\s*—\s*(.+)$/);
-          if (match) {
-            const [, number, title, url] = match;
-            return `<div class="source-item"><strong>[${number}]</strong> ${escapeHtml(title)}<br><a href="${escapeHtml(url)}" target="_blank" rel="noopener" class="source-link">${escapeHtml(url)}</a></div>`;
+        const items = citations.map((c, index) => {
+          let title = '', url = '';
+          
+          if (typeof c === 'string') {
+            const match = c.match(/^\[(\d+)\]\s*(.+?)\s*—\s*(.+)$/);
+            if (match) {
+              const [, number, titlePart, urlPart] = match;
+              title = titlePart;
+              url = urlPart;
+            } else {
+              const urlMatch = c.match(/(https?:\/\/[^\s]+)/);
+              if (urlMatch) {
+                url = urlMatch[1];
+                title = c.replace(url, '').replace(/^\[\d+\]\s*/, '').replace(/\s*—\s*$/, '').trim();
+              } else {
+                title = c;
+                url = '#';
+              }
+            }
+          } else if (typeof c === 'object') {
+            title = c.title || c.assertion || 'Source';
+            url = c.url || c.source || '#';
           }
-          return `<div class="source-item">${escapeHtml(c)}</div>`;
+
+          return `
+            <div class="source-item">
+              <div class="source-title">[${index + 1}] ${escapeHtml(title)}</div>
+              <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="source-link">
+                ${escapeHtml(url)}
+              </a>
+            </div>
+          `;
         }).join('');
-        sourcesHtml = `<div class="sources-section"><div class="sources-title">📚 Sources</div>${items}</div>`;
+        
+        sourcesHtml = `
+          <div class="sources-section">
+            <div class="sources-title">📚 Sources</div>
+            ${items}
+          </div>
+        `;
       }
+
       div.innerHTML = `<div>${formatAnswer(answer)}</div>${sourcesHtml}`;
       chatMessages.appendChild(div);
       scrollToBottom();
+
+      if (window.MathJax) MathJax.typesetPromise();
+      Prism.highlightAll();
     }
 
     function addErrorMessage(error) {
       const div = document.createElement('div');
       div.className = 'message assistant-message';
-      div.innerHTML = `<div style="color:red"><strong>Error:</strong> ${escapeHtml(error)}</div>`;
+      div.innerHTML = `<div style="color:#e53e3e;font-weight:600;"><strong>⚠️ Error:</strong> ${escapeHtml(error)}</div>`;
       chatMessages.appendChild(div);
       scrollToBottom();
     }
@@ -375,7 +453,7 @@
       const div = document.createElement('div');
       div.className = 'message assistant-message';
       div.id = 'loadingMessage';
-      div.textContent = 'Researching and analyzing...';
+      div.innerHTML = '<div class="loading">🔍 Researching and analyzing your question...</div>';
       chatMessages.appendChild(div);
       scrollToBottom();
     }
@@ -387,32 +465,44 @@
     }
 
     function formatAnswer(answer) {
-      let formatted = answer
-        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-        .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-        .replace(/^---$/gm, '<hr>')
-        .replace(/^\s*-\s*(.+)$/gm, '<li>$1</li>')
-        .replace(/^\d+\.\s*(.+)$/gm, '<li>$1</li>');
+      answer = answer.replace(/\([^\)]*\[.*?\]\(.*?\)\)/g, "");
+      answer = answer.replace(/^Source[s]?:.*$/gim, "");
+      answer = answer.replace(/Sources?:[\s\S]*$/i, "");
 
-      // ✅ Convert tables
+      answer = answer.replace(/\$\$(.+?)\$\$/gs, "\\[$1\\]");
+      answer = answer.replace(/\$(.+?)\$/g, "\\($1\\)");
+
+      let formatted = answer
+        .replace(/^### (.+)$/gm, "<h3>$1</h3>")
+        .replace(/^## (.+)$/gm, "<h2>$1</h2>")
+        .replace(/^# (.+)$/gm, "<h1>$1</h1>")
+        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\*(.*?)\*/g, "<em>$1</em>")
+        .replace(/^---$/gm, "<hr>")
+        .replace(/^\s*[-*]\s*(.+)$/gm, "<li>$1</li>")
+        .replace(/^\d+\.\s*(.+)$/gm, "<li>$1</li>")
+        .replace(/```(\w+)?\n([\s\S]*?)```/g, (m, lang, code) => {
+          return `<pre><code class="language-${lang || 'plaintext'}">${escapeHtml(code)}</code></pre>`;
+        });
+
       formatted = formatted.replace(
-        /\|(.+)\|\n\|([-\s|:]+)\|\n([\s\S]+?)(?=\n\n|$)/g,
+        /\|(.+)\|\r?\n\|([-\s|:]+)\|\r?\n((?:\|.+\|\r?\n?)*)/g,
         (match, header, divider, body) => {
-          const headers = header.split('|').map(h => `<th>${h.trim()}</th>`).join('');
-          const rows = body.trim().split('\n').map(row =>
-            '<tr>' + row.split('|').map(c => `<td>${c.trim()}</td>`).join('') + '</tr>'
-          ).join('');
+          const headers = header.split("|").map(h => `<th>${h.trim()}</th>`).join("");
+          const rows = body.trim().split(/\r?\n/).filter(row => row.trim()).map(row => {
+            const cells = row.split("|").filter((cell, index, arr) => index > 0 && index < arr.length - 1);
+            return "<tr>" + cells.map(c => `<td>${c.trim()}</td>`).join("") + "</tr>";
+          }).join("");
           return `<table><thead><tr>${headers}</tr></thead><tbody>${rows}</tbody></table>`;
         }
       );
 
-      return formatted.split('\n\n').map(p => {
-        if (p.startsWith('<') || p === '<hr>') return p;
+      return formatted.split(/\r?\n\r?\n/).map(p => {
+        p = p.trim();
+        if (!p) return '';
+        if (p.startsWith("<") || p.includes("<table>") || p.includes("<h") || p.includes("<hr") || p.includes("<pre>")) return p;
         return `<p>${p}</p>`;
-      }).join('');
+      }).filter(p => p).join("");
     }
 
     function scrollToBottom() {
@@ -424,6 +514,63 @@
       div.textContent = text;
       return div.innerHTML;
     }
+
+    searchForm.addEventListener('submit', () => {
+      setTimeout(() => {
+        searchInput.value = '';
+        searchInput.style.height = 'auto';
+      }, 100);
+    });
+
+    
+    const placeholders = [
+      "Ask me anything",
+      "Ask me about Business",
+      "Ask me about Comparative study"
+    ];
+
+    let phIndex = 0;
+    let charIndex = 0;
+    let currentText = "";
+    let isDeleting = false;
+    let cursorVisible = true;
+    let typingActive = true;
+
+    function typePlaceholder() {
+      if (!searchInput || !typingActive) return;
+
+      if (isDeleting) {
+        currentText = placeholders[phIndex].substring(0, charIndex--);
+      } else {
+        currentText = placeholders[phIndex].substring(0, charIndex++);
+      }
+
+      const cursor = cursorVisible ? "|" : " ";
+      searchInput.setAttribute("placeholder", currentText + cursor);
+
+      if (!isDeleting && charIndex === placeholders[phIndex].length) {
+        isDeleting = true;
+        setTimeout(typePlaceholder, 1000);
+        return;
+      } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        phIndex = (phIndex + 1) % placeholders.length;
+      }
+
+      setTimeout(typePlaceholder, isDeleting ? 60 : 120);
+    }
+
+    setInterval(() => {
+      cursorVisible = !cursorVisible;
+    }, 500);
+
+    setTimeout(typePlaceholder, 500);
+
+  
+    searchInput.addEventListener("input", () => {
+      typingActive = false;
+      searchInput.setAttribute("placeholder", "");
+    });
   </script>
 </body>
 </html>

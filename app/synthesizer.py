@@ -1,6 +1,6 @@
 import os
 import requests
-from app.utils import build_citation_list
+from app.utils import build_citation_list, format_superscripts
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 MODEL = "nvidia/nemotron-nano-9b-v2:free"
@@ -42,11 +42,17 @@ def extract_assertions_from_source(text: str, url: str):
 
 def synthesize_from_sources(question: str, sources: list) -> dict:
     citations = build_citation_list(sources)
-    user_text = f"Question: {question}\n\nSources:\n" + "\n".join(citations)
+
+    # No duplicate "Sources" section — just provide citations list
+    user_text = f"Question: {question}\n\nCitations:\n" + "\n".join(citations)
 
     answer = call_openrouter([
-        {"role": "system", "content": "You are an expert product manager. Answer clearly and cite relevant sources."},
+        {"role": "system", "content": "You are an expert product manager. "
+                                      "Answer clearly and cite relevant sources using [1], [2], etc."},
         {"role": "user", "content": user_text},
     ])
 
-    return {"answer": answer, "citations": citations}
+    # Format [1], [2], etc. into clickable superscripts
+    formatted_answer = format_superscripts(answer, citations)
+
+    return {"answer": formatted_answer, "citations": citations}
