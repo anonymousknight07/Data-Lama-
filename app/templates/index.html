@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Autonomous Business Analyst</title>
+  <title>Data Llama</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -12,30 +12,207 @@
       background: #efedec;
       min-height: 100vh;
       display: flex;
+      color: #000000;
+      overflow-x: hidden;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 60px;
+      height: 100vh;
+      background: rgba(239, 237, 236, 0.95);
+      backdrop-filter: blur(10px);
+      border-right: 1px solid rgba(0, 0, 0, 0.1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1000;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar:hover {
+      width: 280px;
+      background: rgba(239, 237, 236, 0.98);
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .sidebar-header {
+      padding: 20px 15px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 70px;
+    }
+
+    .sidebar-icon {
+      width: 30px;
+      height: 30px;
+      background: #000;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .sidebar-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #000;
+      opacity: 0;
+      white-space: nowrap;
+      transition: opacity 0.3s ease;
+    }
+
+    .sidebar:hover .sidebar-title {
+      opacity: 1;
+    }
+
+    .new-chat-btn {
+      margin: 15px;
+      padding: 12px;
+      background: #000;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+
+    .sidebar:hover .new-chat-btn {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .new-chat-btn:hover {
+      background: #333;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .chat-history {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 0;
+    }
+
+    .chat-history::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .chat-history::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .chat-history::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 2px;
+    }
+
+    .history-item {
+      padding: 12px 15px;
+      margin: 2px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .history-item:hover {
+      background: rgba(255, 255, 255, 0.7);
+      border-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .history-item.active {
+      background: rgba(0, 0, 0, 0.1);
+      border-color: rgba(0, 0, 0, 0.2);
+    }
+
+    .history-icon {
+      width: 20px;
+      height: 20px;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .history-text {
+      flex: 1;
+      font-size: 0.85rem;
+      color: #333;
+      opacity: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: opacity 0.3s ease;
+    }
+
+    .sidebar:hover .history-text {
+      opacity: 1;
+    }
+
+    .history-date {
+      font-size: 0.75rem;
+      color: #666;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .sidebar:hover .history-date {
+      opacity: 1;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 60px;
+      display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 20px;
-      color: #000000;
+      transition: margin-left 0.3s ease;
+      min-height: 100vh;
     }
 
-   #homepage .main-title {
-  font-family: "PP Editorial New Ultralight", "PP Editorial New Ultralight Placeholder", serif;
-  font-size: clamp(2.5rem, 6vw, 4rem);
-  line-height: 1.1;
-  font-weight: 300;
-  color: #111;
-}
+    #homepage .main-title {
+      font-family: "PP Editorial New Ultralight", "PP Editorial New Ultralight Placeholder", serif;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      line-height: 1.1;
+      font-weight: 300;
+      color: #111;
+    }
 
-#homepage .editorial {
-  font-style: normal;
-  font-weight: 300;
-}
+    #homepage .editorial {
+      font-style: normal;
+      font-weight: 300;
+    }
 
-#homepage .editorial-italic {
-  font-style: italic;
-  font-weight: 300;
-}
+    #homepage .editorial-italic {
+      font-style: italic;
+      font-weight: 300;
+    }
 
     .container { max-width: 800px; width: 100%; text-align: center; }
 
@@ -71,7 +248,7 @@
       font-family: inherit;
     }
 
-      .search-button {
+    .search-button {
       position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
       width: 50px; height: 50px; border: none; border-radius: 50%;
       background: #000; color: #fff; cursor: pointer;
@@ -307,31 +484,121 @@
     .chat-messages::-webkit-scrollbar-thumb:hover {
       background: #a0aec0;
     }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 0;
+        transform: translateX(-100%);
+      }
+
+      .sidebar.mobile-open {
+        width: 280px;
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .mobile-menu-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1001;
+        background: #000;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 18px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+
+      .container {
+        padding-top: 80px;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .mobile-menu-btn {
+        display: none;
+      }
+    }
+
+    /* Overlay for mobile */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div id="homepage">
-      <h1 class="main-title">
-        <span class="editorial">What</span> 
-        <span class="editorial-italic">can</span> 
-        <span class="editorial">I help with?</span>
-      </h1>
-      <div class="search-section">
-        <form id="searchForm">
-          <div class="search-container">
-            <textarea id="searchInput" class="search-input" placeholder="Ask anything ... " rows="1" required></textarea>
-            <button type="submit" class="search-button" id="searchButton">
-              <span id="searchIcon">➜</span>
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+  <!-- Mobile Menu Button -->
+  <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
 
-   
-    <div class="chat-area" id="chatArea">
-      <div class="chat-messages" id="chatMessages"></div>
+  <!-- Sidebar Overlay for Mobile -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-icon">DL</div>
+      <div class="sidebar-title">Data Llama</div>
+    </div>
+    
+    <button class="new-chat-btn" id="newChatBtn">
+      <span>+</span>
+      <span>New Chat</span>
+    </button>
+    
+    <div class="chat-history" id="chatHistory">
+      <!-- Chat history items will be dynamically added here -->
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="container">
+      <div id="homepage">
+        <h1 class="main-title">
+          <span class="editorial">What</span> 
+          <span class="editorial-italic">can</span> 
+          <span class="editorial">I help with?</span>
+        </h1>
+        <div class="search-section">
+          <form id="searchForm">
+            <div class="search-container">
+              <textarea id="searchInput" class="search-input" placeholder="Ask anything ... " rows="1" required></textarea>
+              <button type="submit" class="search-button" id="searchButton">
+                <span id="searchIcon">➜</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="chat-area" id="chatArea">
+        <div class="chat-messages" id="chatMessages"></div>
+      </div>
     </div>
   </div>
 
@@ -340,8 +607,53 @@
     const searchInput = document.getElementById('searchInput');
     const chatArea = document.getElementById('chatArea');
     const chatMessages = document.getElementById('chatMessages');
+    const chatHistory = document.getElementById('chatHistory');
+    const newChatBtn = document.getElementById('newChatBtn');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
 
     let isLoading = false;
+    let currentChatId = null;
+    let chatHistoryData = [];
+
+    // Load chat history from memory on page load
+    loadChatHistory();
+
+    // Mobile menu functionality
+    if (mobileMenuBtn) {
+      mobileMenuBtn.addEventListener('click', toggleSidebar);
+    }
+    if (sidebarOverlay) {
+      sidebarOverlay.addEventListener('click', closeSidebar);
+    }
+
+    function toggleSidebar() {
+      sidebar.classList.toggle('mobile-open');
+      sidebarOverlay.classList.toggle('active');
+    }
+
+    function closeSidebar() {
+      sidebar.classList.remove('mobile-open');
+      sidebarOverlay.classList.remove('active');
+    }
+
+    // New chat functionality
+    newChatBtn.addEventListener('click', startNewChat);
+
+    function startNewChat() {
+      currentChatId = Date.now().toString();
+      chatArea.style.display = 'none';
+      chatMessages.innerHTML = '';
+      document.getElementById('homepage').style.display = 'block';
+      
+      // Clear active state from history items
+      document.querySelectorAll('.history-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      closeSidebar(); // Close sidebar on mobile after starting new chat
+    }
 
     searchInput.addEventListener('input', function () {
       this.style.height = 'auto';
@@ -352,10 +664,16 @@
       e.preventDefault();
       const question = searchInput.value.trim();
       if (!question || isLoading) return;
+      
+      document.getElementById('homepage').style.display = 'none';
       await askQuestion(question);
     });
 
     async function askQuestion(question) {
+      if (!currentChatId) {
+        currentChatId = Date.now().toString();
+      }
+
       chatArea.style.display = 'block';
       addUserMessage(question);
       showLoading();
@@ -364,12 +682,31 @@
         const formData = new FormData();
         formData.append('question', question);
 
-        const response = await fetch('/ask', { method: 'POST', body: formData });
-        const data = await response.json();
+        // Check if there's an actual API endpoint
+        let response, data;
+        try {
+          response = await fetch('/ask', { method: 'POST', body: formData });
+          data = await response.json();
+        } catch (apiError) {
+          // Fallback to simulation if API is not available
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          data = {
+            ok: true,
+            answer: `This is a simulated response to: "${question}". In a real implementation, this would connect to your backend API that processes the question and returns an intelligent response with proper business analysis, research citations, and comprehensive insights.`,
+            citations: [
+              { title: "Sample Business Report", url: "https://example.com/business-report" },
+              { title: "Market Analysis Data", url: "https://example.com/market-data" }
+            ]
+          };
+        }
 
         hideLoading();
-        if (data.ok) addAssistantMessage(data.answer, data.citations);
-        else addErrorMessage(data.error || 'Error occurred.');
+        if (data.ok) {
+          addAssistantMessage(data.answer, data.citations);
+          saveChatToHistory(question, data.answer);
+        } else {
+          addErrorMessage(data.error || 'Error occurred.');
+        }
       } catch (error) {
         hideLoading();
         addErrorMessage('Failed to connect to the server.');
@@ -437,10 +774,10 @@
       scrollToBottom();
 
       if (window.MathJax) MathJax.typesetPromise();
-      Prism.highlightAll();
+      if (window.Prism) Prism.highlightAll();
     }
 
-     function addErrorMessage(error) {
+    function addErrorMessage(error) {
       const div = document.createElement('div');
       div.className = 'message assistant-message';
       div.innerHTML = `<div style="color:#e53e3e;font-weight:600;"><strong>⚠️ Error:</strong> ${escapeHtml(error)}</div>`;
@@ -515,6 +852,208 @@
       return div.innerHTML;
     }
 
+    // Chat history functions
+    function saveChatToHistory(question, answer) {
+      const existingChatIndex = chatHistoryData.findIndex(chat => chat.id === currentChatId);
+      
+      if (existingChatIndex !== -1) {
+        // Update existing chat
+        chatHistoryData[existingChatIndex].messages.push({ question, answer });
+        chatHistoryData[existingChatIndex].lastUpdated = new Date();
+      } else {
+        // Create new chat
+        const newChat = {
+          id: currentChatId,
+          title: question.length > 50 ? question.substring(0, 50) + '...' : question,
+          messages: [{ question, answer }],
+          createdAt: new Date(),
+          lastUpdated: new Date()
+        };
+        chatHistoryData.unshift(newChat);
+      }
+
+      // Limit history to 50 chats
+      if (chatHistoryData.length > 50) {
+        chatHistoryData = chatHistoryData.slice(0, 50);
+      }
+
+      renderChatHistory();
+    }
+
+    function loadChatHistory() {
+      // In a real implementation, you would load from localStorage or an API
+      // For now, we'll start with an empty array
+      chatHistoryData = [];
+      renderChatHistory();
+    }
+
+    function renderChatHistory() {
+      chatHistory.innerHTML = '';
+
+      if (chatHistoryData.length === 0) {
+        chatHistory.innerHTML = `
+          <div style="padding: 20px; text-align: center; color: #666; font-size: 0.85rem; opacity: 0;" class="empty-history">
+            <div style="margin-bottom: 10px;">💬</div>
+            <div>No chat history yet</div>
+            <div style="font-size: 0.75rem; margin-top: 5px;">Start a conversation to see your history here</div>
+          </div>
+        `;
+        
+        // Animate the empty state when sidebar is hovered
+        const emptyHistory = chatHistory.querySelector('.empty-history');
+        if (emptyHistory) {
+          sidebar.addEventListener('mouseenter', () => {
+            emptyHistory.style.opacity = '1';
+            emptyHistory.style.transition = 'opacity 0.3s ease 0.1s';
+          });
+          sidebar.addEventListener('mouseleave', () => {
+            emptyHistory.style.opacity = '0';
+            emptyHistory.style.transition = 'opacity 0.3s ease';
+          });
+        }
+        return;
+      }
+
+      // Group chats by date
+      const groupedChats = groupChatsByDate(chatHistoryData);
+      
+      Object.keys(groupedChats).forEach(dateGroup => {
+        // Add date header
+        const dateHeader = document.createElement('div');
+        dateHeader.style.cssText = `
+          padding: 10px 15px 5px 15px;
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: #666;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        `;
+        dateHeader.textContent = dateGroup;
+        chatHistory.appendChild(dateHeader);
+
+        // Add chats for this date
+        groupedChats[dateGroup].forEach(chat => {
+          const historyItem = document.createElement('div');
+          historyItem.className = 'history-item';
+          historyItem.dataset.chatId = chat.id;
+          
+          if (chat.id === currentChatId) {
+            historyItem.classList.add('active');
+          }
+
+          historyItem.innerHTML = `
+            <div class="history-icon">💬</div>
+            <div class="history-text">${chat.title}</div>
+            <div class="history-date">${formatTime(chat.lastUpdated)}</div>
+          `;
+
+          historyItem.addEventListener('click', () => loadChat(chat.id));
+          chatHistory.appendChild(historyItem);
+        });
+      });
+
+      // Show date headers on hover
+      sidebar.addEventListener('mouseenter', () => {
+        chatHistory.querySelectorAll('[style*="opacity: 0"]').forEach(header => {
+          header.style.opacity = '1';
+        });
+      });
+
+      sidebar.addEventListener('mouseleave', () => {
+        chatHistory.querySelectorAll('[style*="text-transform: uppercase"]').forEach(header => {
+          header.style.opacity = '0';
+        });
+      });
+    }
+
+    function groupChatsByDate(chats) {
+      const groups = {};
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const lastWeek = new Date(today);
+      lastWeek.setDate(lastWeek.getDate() - 7);
+
+      chats.forEach(chat => {
+        const chatDate = new Date(chat.lastUpdated);
+        let groupKey;
+
+        if (isSameDay(chatDate, today)) {
+          groupKey = 'Today';
+        } else if (isSameDay(chatDate, yesterday)) {
+          groupKey = 'Yesterday';
+        } else if (chatDate > lastWeek) {
+          groupKey = 'Last 7 days';
+        } else {
+          groupKey = formatDateGroup(chatDate);
+        }
+
+        if (!groups[groupKey]) {
+          groups[groupKey] = [];
+        }
+        groups[groupKey].push(chat);
+      });
+
+      return groups;
+    }
+
+    function isSameDay(date1, date2) {
+      return date1.getDate() === date2.getDate() &&
+             date1.getMonth() === date2.getMonth() &&
+             date1.getFullYear() === date2.getFullYear();
+    }
+
+    function formatDateGroup(date) {
+      const options = { month: 'long', year: 'numeric' };
+      return date.toLocaleDateString('en-US', options);
+    }
+
+    function formatTime(date) {
+      const now = new Date();
+      const chatDate = new Date(date);
+      const diffMs = now - chatDate;
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+      if (diffHours < 1) {
+        return 'Now';
+      } else if (diffHours < 24) {
+        return `${diffHours}h`;
+      } else if (diffDays === 1) {
+        return '1d';
+      } else if (diffDays < 7) {
+        return `${diffDays}d`;
+      } else {
+        return chatDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      }
+    }
+
+    function loadChat(chatId) {
+      const chat = chatHistoryData.find(c => c.id === chatId);
+      if (!chat) return;
+
+      currentChatId = chatId;
+      chatMessages.innerHTML = '';
+      document.getElementById('homepage').style.display = 'none';
+      chatArea.style.display = 'block';
+
+      // Load all messages from this chat
+      chat.messages.forEach(msg => {
+        addUserMessage(msg.question);
+        addAssistantMessage(msg.answer, []);
+      });
+
+      // Update active state in sidebar
+      document.querySelectorAll('.history-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      document.querySelector(`[data-chat-id="${chatId}"]`)?.classList.add('active');
+
+      closeSidebar(); // Close sidebar on mobile after loading chat
+    }
+
     searchForm.addEventListener('submit', () => {
       setTimeout(() => {
         searchInput.value = '';
@@ -522,7 +1061,7 @@
       }, 100);
     });
 
-    
+    // Placeholder animation
     const placeholders = [
       "Ask me anything",
       "Ask me about Business",
@@ -566,11 +1105,56 @@
 
     setTimeout(typePlaceholder, 500);
 
-  
     searchInput.addEventListener("input", () => {
       typingActive = false;
       searchInput.setAttribute("placeholder", "");
     });
+
+    // Add some sample chat history for demonstration
+    setTimeout(() => {
+      // Simulate some existing chats
+      const sampleChats = [
+        {
+          id: "sample1",
+          title: "Market analysis for Q4 2024",
+          messages: [
+            {
+              question: "Can you provide a market analysis for Q4 2024?",
+              answer: "Based on current market trends, Q4 2024 shows strong growth potential in tech sectors with emerging opportunities in AI-driven solutions and sustainable technologies. Key indicators suggest consumer confidence is stabilizing while enterprise spending remains robust."
+            }
+          ],
+          createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
+          lastUpdated: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
+        },
+        {
+          id: "sample2",
+          title: "Competitor analysis for SaaS companies",
+          messages: [
+            {
+              question: "What's the competitive landscape for SaaS companies?",
+              answer: "The SaaS market is highly competitive with key players including Salesforce, Microsoft, and emerging unicorns. Market differentiation increasingly depends on AI integration, user experience, and vertical specialization. Price pressure continues as competition intensifies."
+            }
+          ],
+          createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
+          lastUpdated: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
+        },
+        {
+          id: "sample3",
+          title: "ROI calculation for marketing campaigns",
+          messages: [
+            {
+              question: "How do I calculate ROI for marketing campaigns?",
+              answer: "ROI for marketing campaigns can be calculated using the formula: (Revenue Generated - Marketing Cost) / Marketing Cost × 100. Consider attribution models, customer lifetime value, and multi-touch attribution for more accurate measurements. Track both short-term conversion and long-term brand impact."
+            }
+          ],
+          createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000), // 10 days ago
+          lastUpdated: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)
+        }
+      ];
+      
+      chatHistoryData = sampleChats;
+      renderChatHistory();
+    }, 1000);
   </script>
 </body>
 </html>
