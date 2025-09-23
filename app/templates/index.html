@@ -440,13 +440,13 @@
       Prism.highlightAll();
     }
 
-    function addErrorMessage(error) {
+     function addErrorMessage(error) {
       const div = document.createElement('div');
       div.className = 'message assistant-message';
       div.innerHTML = `<div style="color:#e53e3e;font-weight:600;"><strong>⚠️ Error:</strong> ${escapeHtml(error)}</div>`;
       chatMessages.appendChild(div);
       scrollToBottom();
-    }
+    } 
 
     function showLoading() {
       isLoading = true;

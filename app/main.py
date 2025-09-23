@@ -10,7 +10,7 @@ import os
 from app.researcher import researcher_job
 from app.synthesizer import synthesize_from_sources
 
-app = FastAPI(title="RICE-Kano Agent Prototype")
+app = FastAPI(title="Business Analysts")
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
@@ -22,7 +22,7 @@ async def home(request: Request):
 
 @app.post("/ask")
 async def ask(question: str = Form(...)):
-    query = question + " RICE Kano model prioritization comparison"
+    query = question 
     sources = researcher_job(query, top_k_sites=5)
     try:
         final_answer = synthesize_from_sources(question, sources)

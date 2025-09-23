@@ -3,7 +3,7 @@ import requests
 from app.utils import build_citation_list, format_superscripts
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
-MODEL = "nvidia/nemotron-nano-9b-v2:free"
+MODEL = "google/gemini-2.0-flash-exp:free"
 
 
 def get_api_key():
@@ -14,14 +14,18 @@ def get_api_key():
 
 
 def call_openrouter(messages):
-    headers = {
-        "Authorization": f"Bearer {get_api_key()}",
-        "Content-Type": "application/json",
-    }
-    payload = {"model": MODEL, "messages": messages}
-    resp = requests.post(OPENROUTER_URL, headers=headers, json=payload, timeout=30)
-    resp.raise_for_status()
-    return resp.json()["choices"][0]["message"]["content"].strip()
+    try:
+        headers = {
+            "Authorization": f"Bearer {get_api_key()}",
+            "Content-Type": "application/json",
+        }
+        payload = {"model": MODEL, "messages": messages}
+        resp = requests.post(OPENROUTER_URL, headers=headers, json=payload, timeout=30)
+        resp.raise_for_status()
+        return resp.json()["choices"][0]["message"]["content"].strip()
+    except Exception as e:
+        # Return a friendly fallback instead of crashing
+        return f"⚠️ Unable to fetch model response: {str(e)}"
 
 
 def extract_assertions_from_source(text: str, url: str):
@@ -43,12 +47,18 @@ def extract_assertions_from_source(text: str, url: str):
 def synthesize_from_sources(question: str, sources: list) -> dict:
     citations = build_citation_list(sources)
 
-    # No duplicate "Sources" section — just provide citations list
-    user_text = f"Question: {question}\n\nCitations:\n" + "\n".join(citations)
+    # Pass only the question, let frontend handle Sources section
+    user_text = (
+        f"Question: {question}\n\n"
+        "Answer clearly and cite sources inline using [1], [2], etc. "
+        "Do NOT include a 'Sources' section."
+    )
 
     answer = call_openrouter([
-        {"role": "system", "content": "You are an expert product manager. "
-                                      "Answer clearly and cite relevant sources using [1], [2], etc."},
+        {"role": "system", "content": "You are an expert business analyst. "
+                                      "Provide a structured, professional answer. "
+                                      "Cite sources inline with [1], [2], etc. "
+                                      "Do NOT append a separate 'Sources' section."},
         {"role": "user", "content": user_text},
     ])
 
