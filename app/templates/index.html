@@ -62,6 +62,12 @@
       flex-shrink: 0;
     }
 
+    .sidebar-icon img {
+      width: 32px;   /* adjust size as needed */
+      height: 32px;
+      object-fit: contain; /* keeps aspect ratio */
+}
+ 
     .sidebar-title {
       font-size: 1rem;
       font-weight: 600;
@@ -561,7 +567,11 @@
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <div class="sidebar-icon">DL</div>
+      <div class="sidebar-icon">
+  <img src="public/data.png" alt="Data Llama Icon" />
+
+</div>
+
       <div class="sidebar-title">Data Llama</div>
     </div>
     
