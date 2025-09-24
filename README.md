@@ -125,14 +125,14 @@ http://127.0.0.1:8000
 
 ---
 
-## 📦 Requirements
+## Requirements
 See [`requirements.txt`](requirements.txt)  
 Includes:
 - `fastapi`, `uvicorn`, `requests`, `newspaper3k`, `jinja2`, `beautifulsoup4`, etc.  
 
 ---
 
-## ✅ Health Check
+## Health Check
 Test server status:
 ```bash
 curl http://127.0.0.1:8000/health
@@ -140,9 +140,9 @@ curl http://127.0.0.1:8000/health
 
 ---
 
-## 📜 License
+##  License
 MIT License – free to use and modify.  
 
 ---
 
-### ✨ Built with love by Akshat
+###  Built with love by Akshat
