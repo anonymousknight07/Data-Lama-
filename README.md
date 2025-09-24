@@ -1,5 +1,8 @@
 # 🦙 Data Llama – Business Analyst Agent
-<img width="1024" height="1024" alt="data" src="https://github.com/user-attachments/assets/ca030254-cb4c-4ea1-abf3-a0b344362606" />
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/02f1e1e9-68dc-479f-a99e-fdf5c6b6903b" alt="data_optimized" width="307" height="307" />
+</p>
 
 Data Llama is a simple, **autonomous agent** system that can research this business  concept online, synthesize the findings from multiple sources, and produce a single, reliable, 
 and well-cited answer for the student .
