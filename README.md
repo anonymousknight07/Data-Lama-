@@ -1,6 +1,7 @@
 # 🦙 Data Llama – Business Analyst Agent
 
-Data Llama is an autonomous **Business Analyst Agent** that researches, extracts, and synthesizes information into well-cited answers using multiple LLMs.  
+Data Llama is a simple, **autonomous agent** system that can research this business  concept online, synthesize the findings from multiple sources, and produce a single, reliable, 
+and well-cited answer for the student .
 
 It combines **web research**, **AI summarization**, and a **chat-style UI** to provide reliable, source-backed insights.
 
