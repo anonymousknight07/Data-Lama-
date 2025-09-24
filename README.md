@@ -19,18 +19,19 @@ It combines **web research**, **AI summarization**, and a **chat-style UI** to p
 
 ```mermaid
 flowchart TD
-    User[User Query] -->|1. Ask| Frontend[Frontend UI<br>(HTML/JS Chat)]
+    User[User Query] -->|1. Ask| Frontend[Frontend UI\n(HTML/JS Chat)]
     Frontend -->|2. POST /ask| Backend[FastAPI Backend]
 
-    Backend -->|3. Research| Researcher[Researcher Agent<br>(Serper API + Fallbacks)]
+    Backend -->|3. Research| Researcher[Researcher Agent\n(Serper API + Fallbacks)]
     Researcher -->|4. Extract Sources| Sources[(Relevant Sources)]
 
-    Backend -->|5. Synthesize| Synthesizer[Synthesizer Agent<br>(OpenRouter LLMs)]
-    Synthesizer -->|6. Format| Utils[Utils<br>(Chunking + Citations)]
+    Backend -->|5. Synthesize| Synthesizer[Synthesizer Agent\n(OpenRouter LLMs)]
+    Synthesizer -->|6. Format| Utils[Utils\n(Chunking + Citations)]
 
     Utils -->|7. Final Answer + Superscripts| Backend
     Backend -->|8. Response| Frontend
     Frontend -->|9. Display| User
+
 ```
 
 **Flow:**  
