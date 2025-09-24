@@ -10,7 +10,7 @@ import os
 import logging
 import traceback
 import time
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 from app.researcher import researcher_job
 from app.synthesizer import synthesize_from_sources
@@ -47,6 +47,12 @@ async def health_check():
     """Health check endpoint for monitoring"""
     return {"status": "healthy", "service": "data-llama"}
 
+@app.get("/models")
+async def get_available_models():
+    """Get available models for the frontend"""
+    from app.synthesizer import get_available_models
+    return get_available_models()
+
 def format_error_response(error_type: str, message: str, details: str = None) -> Dict[str, Any]:
     """Format error responses consistently"""
     response = {
@@ -75,17 +81,26 @@ def validate_question(question: str) -> str:
     
     return question
 
+def validate_model(model_id: str) -> str:
+    """Validate the model ID"""
+    from app.synthesizer import validate_model
+    return validate_model(model_id)
+
 @app.post("/ask")
-async def ask(question: str = Form(...)):
+async def ask(question: str = Form(...), model: Optional[str] = Form(None)):
     """
-    Main endpoint for processing user questions
+    Main endpoint for processing user questions with model selection
     """
     start_time = time.time()
     
     try:
         # Validate input
         question = validate_question(question)
-        logger.info(f"Processing question: {question[:100]}...")
+        
+        # Validate and set model
+        selected_model = validate_model(model)
+        
+        logger.info(f"Processing question: {question[:100]}... with model: {selected_model}")
         
         # Step 1: Research phase
         try:
@@ -107,9 +122,9 @@ async def ask(question: str = Form(...)):
                 str(e)
             ), status_code=500)
         
-        # Step 2: Synthesis phase
+        # Step 2: Synthesis phase with selected model
         try:
-            result = synthesize_from_sources(question, sources)
+            result = synthesize_from_sources(question, sources, model_id=selected_model)
             
             # Check if synthesis failed due to rate limiting
             if result.get("error") == "API_RATE_LIMITED":
@@ -117,9 +132,11 @@ async def ask(question: str = Form(...)):
                     "ok": True,
                     "answer": result["answer"],
                     "citations": result["citations"],
-                    "warning": "AI analysis temporarily unavailable due to high demand. Please try again in a few minutes for full analysis.",
+                    "warning": f"AI analysis with {result.get('model_used', selected_model)} temporarily unavailable due to high demand. Please try again in a few minutes or select a different model.",
                     "source_count": len(sources),
-                    "processing_time": round(time.time() - start_time, 2)
+                    "processing_time": round(time.time() - start_time, 2),
+                    "model_used": result.get("model_used", selected_model),
+                    "suggested_alternatives": result.get("suggested_alternatives", [])
                 })
             
             # Successful response
@@ -128,14 +145,16 @@ async def ask(question: str = Form(...)):
                 "answer": result["answer"],
                 "citations": result["citations"],
                 "source_count": len(sources),
-                "processing_time": round(time.time() - start_time, 2)
+                "processing_time": round(time.time() - start_time, 2),
+                "model_used": result.get("model_used", selected_model),
+                "model_id": result.get("model_id", selected_model)
             }
             
-            logger.info(f"Question processed successfully in {response_data['processing_time']} seconds")
+            logger.info(f"Question processed successfully in {response_data['processing_time']} seconds using {result.get('model_used', selected_model)}")
             return JSONResponse(response_data)
             
         except Exception as e:
-            logger.error(f"Synthesis phase failed: {e}")
+            logger.error(f"Synthesis phase failed with model {selected_model}: {e}")
             logger.error(f"Traceback: {traceback.format_exc()}")
             
             # Provide fallback response with just sources
@@ -149,20 +168,29 @@ async def ask(question: str = Form(...)):
             
             return JSONResponse({
                 "ok": True,
-                "answer": f"""I apologize, but I'm experiencing high demand and cannot provide a full AI analysis right now. However, I've successfully found {len(sources)} relevant sources about "{question}".
+                "answer": f"""I apologize, but I'm experiencing issues with the {selected_model} model and cannot provide a full AI analysis right now. However, I've successfully found {len(sources)} relevant sources about "{question}".
 
 **What I found:**
 Your question has been researched and relevant sources have been identified. The research system is working correctly.
 
 **Current limitation:**
-The AI synthesis system is temporarily overloaded (Error: {str(e)[:100]}).
+The AI synthesis system for {selected_model} is temporarily experiencing issues (Error: {str(e)[:100]}).
 
-**Recommendation:**
-Please try your question again in 2-3 minutes. The system will retry automatically with proper rate limiting.""",
+**Recommendations:**
+1. Try selecting a different model from the dropdown (Claude Sonnet, GPT-4, etc.)
+2. Wait 2-3 minutes and retry with the same model
+3. The system will retry automatically with proper rate limiting
+
+**Available alternatives:**
+- anthropic/claude-3.5-sonnet (Claude Sonnet)
+- openai/gpt-4 (GPT-4)  
+- google/gemini-2.0-flash-exp:free (Gemini Flash)""",
                 "citations": fallback_citations,
-                "warning": "AI synthesis temporarily unavailable due to system overload",
+                "warning": f"AI synthesis with {selected_model} temporarily unavailable",
                 "source_count": len(sources),
-                "processing_time": round(time.time() - start_time, 2)
+                "processing_time": round(time.time() - start_time, 2),
+                "model_used": selected_model,
+                "suggested_alternatives": ["anthropic/claude-3.5-sonnet", "openai/gpt-4", "google/gemini-2.0-flash-exp:free"]
             })
     
     except ValueError as e:
@@ -228,6 +256,11 @@ async def startup_event():
         logger.warning(f"Missing optional environment variables: {missing_optional}")
         logger.warning("Some features may be limited without these variables")
     
+    # Log available models
+    from app.synthesizer import AVAILABLE_MODELS, DEFAULT_MODEL
+    logger.info(f"Available models: {list(AVAILABLE_MODELS.keys())}")
+    logger.info(f"Default model: {DEFAULT_MODEL}")
+    
     logger.info("Data Llama Business Analyst startup complete")
 
 # Shutdown event
@@ -246,7 +279,7 @@ if __name__ == "__main__":
     logger.info(f"Starting server on {host}:{port}")
     
     uvicorn.run(
-        "main:app",  # Updated to match the current file structure
+        "main:app",
         host=host,
         port=port,
         reload=True,

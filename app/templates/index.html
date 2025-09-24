@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data Llama</title>
+   <link rel="icon" type="image/png" href="/public/data.png">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -61,12 +62,6 @@
       font-weight: 600;
       flex-shrink: 0;
     }
-
-    .sidebar-icon img {
-      width: 32px;   /* adjust size as needed */
-      height: 32px;
-      object-fit: contain; /* keeps aspect ratio */
-}
  
     .sidebar-title {
       font-size: 1rem;
@@ -230,6 +225,8 @@
     }
 
     .search-section { position: relative; margin-bottom: 3rem; }
+    
+    /* Enhanced Search Container with Model Selector */
     .search-container {
       position: relative;
       max-width: 600px;
@@ -237,35 +234,238 @@
       background: white;
       border-radius: 25px;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      overflow: visible;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .search-container:focus-within {
+      border-color: #000;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .search-input-wrapper {
+      display: flex;
+      align-items: center;  
+      gap: 12px;
+      padding: 20px 70px 20px 25px;
+      min-height: 60px;
+    }
+
+    .model-selector {
+      position: relative;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .model-button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: rgba(239, 237, 236, 0.8);
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: #333;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .model-button:hover {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(0, 0, 0, 0.25);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .model-button.active {
+      background: #000;
+      color: white;
+      border-color: #000;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .model-logo {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      object-fit: contain;
+      background: linear-gradient(135deg, #656c86ff 0%, #130f16ff 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 600;
+      color: white;
       overflow: hidden;
     }
 
-    .search-input {
+    .model-logo img {
       width: 100%;
-      padding: 20px 70px 20px 25px;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+
+    .model-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(20px);
+      z-index: 1000;
+      max-height: 400px;
+      overflow-y: auto;
+      margin-top: 8px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .model-dropdown.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .model-option {
+      padding: 16px 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .model-option:last-child {
+      border-bottom: none;
+    }
+
+    .model-option:hover {
+      background: rgba(239, 237, 236, 0.5);
+      transform: translateX(2px);
+    }
+
+    .model-option.selected {
+      background: #000;
+      color: white;
+    }
+
+    .model-option.selected:hover {
+      background: #333;
+    }
+
+    .model-option-logo {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #656c86ff 0%, #130f16ff 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: white;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .model-option-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+
+    .model-option-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .model-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 2px;
+      line-height: 1.2;
+    }
+
+    .model-description {
+      font-size: 0.75rem;
+      color: #666;
+      line-height: 1.3;
+    }
+
+    .model-option.selected .model-description {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .model-provider {
+      font-size: 0.7rem;
+      color: #999;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    .model-option.selected .model-provider {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .search-input {
+      flex: 1;
       border: none;
       font-size: 1.1rem;
       background: transparent;
       outline: none;
       color: #000;
       line-height: 1.5;
-      min-height: 60px;
       resize: none;
       font-family: inherit;
+      min-height: 24px;
     }
 
     .search-button {
-      position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
-      width: 50px; height: 50px; border: none; border-radius: 50%;
-      background: #000; color: #fff; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
+      position: absolute; 
+      right: 8px; 
+      top: 50%; 
+      transform: translateY(-50%);
+      width: 50px; 
+      height: 50px; 
+      border: none; 
+      border-radius: 50%;
+      background: #000; 
+      color: #fff; 
+      cursor: pointer;
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
       transition: all 0.2s ease;
     }
-    .search-button:hover { background: #333; }
+    
+    .search-button:hover { 
+      background: #333; 
+      transform: translateY(-50%) scale(1.05);
+    }
+    
     .search-button:active { 
       background: #000; 
       box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
       transform: translateY(-50%) scale(0.95);
+    }
+
+    .search-button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: translateY(-50%);
     }
 
     #searchIcon {
@@ -274,17 +474,50 @@
       line-height: 1;
       transition: all 0.2s ease;
     }
+
     .chat-area {
-      display: none; max-width: 800px; width: 100%;
-      background: white; border-radius: 20px;
+      display: none; 
+      max-width: 800px; 
+      width: 100%;
+      background: white; 
+      border-radius: 20px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-      margin-top: 2rem; overflow: hidden; min-height: 400px;
+      margin-top: 2rem; 
+      overflow: hidden; 
+      min-height: 400px;
     }
 
     .chat-header {
-      background: #000; color: white;
-      padding: 20px; text-align: center;
-      font-weight: 600; border-bottom: 1px solid #e2e8f0;
+      background: #000; 
+      color: white;
+      padding: 20px; 
+      text-align: center;
+      font-weight: 600; 
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .chat-header-logo {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 600;
+      overflow: hidden;
+    }
+
+    .chat-header-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 4px;
     }
 
     .chat-messages {
@@ -295,11 +528,28 @@
       overflow-wrap: anywhere;
     }
 
-    .message { margin-bottom: 20px; padding: 16px 20px; border-radius: 16px; max-width: 100%; }
-    .user-message { background: #000; color: white; margin-left: auto; text-align: right; }
-    .assistant-message { background: #fafafa; color: #2d3748; border: 1px solid #e2e8f0; line-height: 1.7; text-align: left; }
+    .message { 
+      margin-bottom: 20px; 
+      padding: 16px 20px; 
+      border-radius: 16px; 
+      max-width: 100%; 
+    }
+    
+    .user-message { 
+      background: #000; 
+      color: white; 
+      margin-left: auto; 
+      text-align: right; 
+    }
+    
+    .assistant-message { 
+      background: #fafafa; 
+      color: #2d3748; 
+      border: 1px solid #e2e8f0; 
+      line-height: 1.7; 
+      text-align: left; 
+    }
 
-   
     /* Enhanced Table Styling */
     .assistant-message table {
       width: 100%; 
@@ -529,6 +779,37 @@
       .container {
         padding-top: 80px;
       }
+
+      .search-input-wrapper {
+        flex-direction: column;
+        gap: 12px;
+        padding: 20px 25px 60px 25px;
+        align-items: stretch;
+      }
+
+      .model-selector {
+        order: -1;
+        margin-top: 0;
+      }
+
+      .model-button {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .search-button {
+        bottom: 8px;
+        top: auto;
+        transform: none;
+      }
+
+      .search-button:hover {
+        transform: scale(1.05);
+      }
+
+      .search-button:active {
+        transform: scale(0.95);
+      }
     }
 
     @media (min-width: 769px) {
@@ -555,6 +836,24 @@
       opacity: 1;
       visibility: visible;
     }
+
+    /* Model dropdown scrollbar */
+    .model-dropdown::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .model-dropdown::-webkit-scrollbar-track {
+      background: #f8f9fa;
+    }
+
+    .model-dropdown::-webkit-scrollbar-thumb {
+      background: #dee2e6;
+      border-radius: 3px;
+    }
+
+    .model-dropdown::-webkit-scrollbar-thumb:hover {
+      background: #adb5bd;
+    }
   </style>
 </head>
 <body>
@@ -567,9 +866,8 @@
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <div class="sidebar-icon">
-  <img src="public/data.png" alt="Data Llama Icon" />
-
+     <div class="sidebar-icon">
+  <img src="/public/data.png" alt="Data Llama Logo" style="width:100%; height:100%; object-fit:contain; border-radius:8px;">
 </div>
 
       <div class="sidebar-title">Data Llama</div>
@@ -597,9 +895,24 @@
         <div class="search-section">
           <form id="searchForm">
             <div class="search-container">
-              <textarea id="searchInput" class="search-input" placeholder="Ask anything ... " rows="1" required></textarea>
+              <div class="search-input-wrapper">
+                <div class="model-selector">
+                  <button type="button" class="model-button" id="modelButton">
+                    <div class="model-logo" id="selectedModelLogo">
+                        <img src="/public/gemini.jpg" alt="Gemini Logo" 
+                            style="width:100%; height:100%; object-fit:contain; border-radius:4px;">
+                                    </div>
+                  <span id="selectedModelName">Gemini</span>
+<span style="font-size: 0.7rem;">▼</span>
+                  </button>
+                  <div class="model-dropdown" id="modelDropdown">
+                    <!-- Model options will be populated here -->
+                  </div>
+                </div>
+                <textarea id="searchInput" class="search-input" placeholder="Ask anything..." rows="1" required></textarea>
+              </div>
               <button type="submit" class="search-button" id="searchButton">
-                <span id="searchIcon">➜</span>
+                <span id="searchIcon">→</span>
               </button>
             </div>
           </form>
@@ -607,12 +920,101 @@
       </div>
 
       <div class="chat-area" id="chatArea">
+        <div class="chat-header" id="chatHeader">
+          <div class="chat-header-logo" id="chatModelLogo">G</div>
+          <span id="chatModelName">Gemini 2.0 Flash</span>
+        </div>
         <div class="chat-messages" id="chatMessages"></div>
       </div>
     </div>
   </div>
 
   <script>
+    // Model configurations with your specified models
+    const MODELS = [
+      {
+        id: "x-ai/grok-4-fast:free",
+        name: "Grok 4",
+        description: "Lightning-fast responses with xAI's latest model",
+        icon: "G",
+        provider: "xAI",
+        logo: "/public/grok.png"
+      },
+      {
+        id: "deepseek/deepseek-chat-v3.1:free",
+        name: "DeepSeek ",
+        description: "Advanced reasoning and coding capabilities",
+        icon: "D",
+        provider: "DeepSeek",
+        logo: "/public/deepseek.jpg"
+      },
+      {
+        id: "deepseek/deepseek-chat-v3-0324:free",
+        name: "DeepSeek Chat v3.0",
+        description: "Efficient general-purpose AI model",
+        icon: "D",
+        provider: "DeepSeek",
+        logo: "/public/deep2.jpg"
+      },
+      {
+        id: "microsoft/mai-ds-r1:free",
+        name: "MAI-DS R1",
+        description: "Microsoft's advanced AI for data science",
+        icon: "M",
+        provider: "Microsoft",
+        logo: "/public/microsoft.png"
+      },
+      {
+        id: "meta-llama/llama-3.3-70b-instruct:free",
+        name: "Llama 3.3 70B",
+        description: "Meta's powerful model",
+        icon: "L",
+        provider: "Meta",
+        logo: "/public/meta.jpg"
+      },
+      {
+        id: "google/gemini-2.0-flash-exp:free",
+        name: "Gemini",
+        description: "Google's latest model",
+        icon: "G",
+        provider: "Google",
+        logo: "/public/gemini.jpg"
+      },
+      {
+        id: "openai/gpt-oss-20b:free",
+        name: "GPT",
+        description: "Powerful model from OpenAI",
+        icon: "O",
+        provider: "OpenAI",
+        logo: "/public/chatgpt.png"
+      },
+      {
+        id: "mistralai/mistral-small-3.2-24b-instruct:free",
+        name: "Mistral 2",
+        description: "Efficient and capable European AI",
+        icon: "M",
+        provider: "Mistral AI",
+        logo: "/public/Mistra.png"
+      },
+      {
+        id: "google/gemma-3-27b-it:free",
+        name: "Gemma 3 27B",
+        description: "Google's instruction-tuned model",
+        icon: "G",
+        provider: "Google",
+        logo: "/public/gemini.png"
+      },
+      {
+        id: "mistralai/mistral-7b-instruct:free",
+        name: "Mistral 7B Instruct",
+        description: "Compact but powerful AI model",
+        icon: "M",
+        provider: "Mistral AI",
+        logo: "/public/Mistra.png"
+      }
+    ];
+
+    // Global variables
     const searchForm = document.getElementById('searchForm');
     const searchInput = document.getElementById('searchInput');
     const chatArea = document.getElementById('chatArea');
@@ -622,20 +1024,164 @@
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const sidebar = document.getElementById('sidebar');
     const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const modelButton = document.getElementById('modelButton');
+    const modelDropdown = document.getElementById('modelDropdown');
+    const selectedModelName = document.getElementById('selectedModelName');
+    const selectedModelLogo = document.getElementById('selectedModelLogo');
+    const chatModelName = document.getElementById('chatModelName');
+    const chatModelLogo = document.getElementById('chatModelLogo');
+    const chatHeader = document.getElementById('chatHeader');
 
     let isLoading = false;
     let currentChatId = null;
     let chatHistoryData = [];
+    let selectedModel = MODELS[0]; // Default to first model (Grok 4 Fast)
 
-    // Load chat history from memory on page load
-    loadChatHistory();
+    // Initialize the application
+    initializeApp();
 
-    // Mobile menu functionality
-    if (mobileMenuBtn) {
-      mobileMenuBtn.addEventListener('click', toggleSidebar);
+    function initializeApp() {
+      loadChatHistory();
+      populateModelDropdown();
+      setupEventListeners();
+      
+      // Add sample chat history after a delay
+      setTimeout(() => {
+        addSampleChatHistory();
+      }, 1000);
     }
-    if (sidebarOverlay) {
-      sidebarOverlay.addEventListener('click', closeSidebar);
+
+    function createModelLogo(model, size = 'small') {
+      const logoElement = document.createElement('div');
+      logoElement.className = size === 'small' ? 'model-logo' : 'model-option-logo';
+      
+      // Try to load the actual logo, fallback to icon
+      const img = document.createElement('img');
+      img.src = model.logo;
+      img.alt = model.provider;
+      img.onerror = function() {
+        // Fallback to icon if logo fails to load
+        logoElement.innerHTML = model.icon;
+      };
+      
+      logoElement.appendChild(img);
+      return logoElement;
+    }
+
+    function populateModelDropdown() {
+      modelDropdown.innerHTML = '';
+      
+      MODELS.forEach(model => {
+        const option = document.createElement('div');
+        option.className = `model-option ${model.id === selectedModel.id ? 'selected' : ''}`;
+        option.dataset.modelId = model.id;
+        
+        const logoElement = createModelLogo(model, 'large');
+        
+        option.innerHTML = `
+          <div class="model-option-content">
+            <div class="model-name">${model.name}</div>
+            <div class="model-description">${model.description}</div>
+            <div class="model-provider">${model.provider}</div>
+          </div>
+        `;
+        
+        option.insertBefore(logoElement, option.firstChild);
+        option.addEventListener('click', () => selectModel(model));
+        modelDropdown.appendChild(option);
+      });
+    }
+
+    function selectModel(model) {
+      selectedModel = model;
+      selectedModelName.textContent = model.name;
+      chatModelName.textContent = model.name;
+      
+      // Update model logos
+      updateModelLogo(selectedModelLogo, model);
+      updateModelLogo(chatModelLogo, model);
+      
+      // Update dropdown selection
+      document.querySelectorAll('.model-option').forEach(option => {
+        option.classList.remove('selected');
+        if (option.dataset.modelId === model.id) {
+          option.classList.add('selected');
+        }
+      });
+      
+      closeModelDropdown();
+    }
+
+    function updateModelLogo(logoElement, model) {
+      logoElement.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = model.logo;
+      img.alt = model.provider;
+      img.onerror = function() {
+        logoElement.innerHTML = model.icon;
+      };
+      logoElement.appendChild(img);
+    }
+
+    function setupEventListeners() {
+      // Mobile menu functionality
+      if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', toggleSidebar);
+      }
+      if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', closeSidebar);
+      }
+
+      // New chat functionality
+      newChatBtn.addEventListener('click', startNewChat);
+
+      // Model selector
+      modelButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleModelDropdown();
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!modelButton.contains(e.target) && !modelDropdown.contains(e.target)) {
+          closeModelDropdown();
+        }
+      });
+
+      // Search input auto-resize
+      searchInput.addEventListener('input', function () {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+      });
+
+      // Form submission
+      searchForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const question = searchInput.value.trim();
+        if (!question || isLoading) return;
+        
+        document.getElementById('homepage').style.display = 'none';
+        await askQuestion(question);
+      });
+    }
+
+    function toggleModelDropdown() {
+      const isActive = modelDropdown.classList.contains('active');
+      if (isActive) {
+        closeModelDropdown();
+      } else {
+        openModelDropdown();
+      }
+    }
+
+    function openModelDropdown() {
+      modelDropdown.classList.add('active');
+      modelButton.classList.add('active');
+    }
+
+    function closeModelDropdown() {
+      modelDropdown.classList.remove('active');
+      modelButton.classList.remove('active');
     }
 
     function toggleSidebar() {
@@ -647,9 +1193,6 @@
       sidebar.classList.remove('mobile-open');
       sidebarOverlay.classList.remove('active');
     }
-
-    // New chat functionality
-    newChatBtn.addEventListener('click', startNewChat);
 
     function startNewChat() {
       currentChatId = Date.now().toString();
@@ -665,20 +1208,6 @@
       closeSidebar(); // Close sidebar on mobile after starting new chat
     }
 
-    searchInput.addEventListener('input', function () {
-      this.style.height = 'auto';
-      this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-    });
-
-    searchForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const question = searchInput.value.trim();
-      if (!question || isLoading) return;
-      
-      document.getElementById('homepage').style.display = 'none';
-      await askQuestion(question);
-    });
-
     async function askQuestion(question) {
       if (!currentChatId) {
         currentChatId = Date.now().toString();
@@ -691,6 +1220,7 @@
       try {
         const formData = new FormData();
         formData.append('question', question);
+        formData.append('model', selectedModel.id); // Include selected model
 
         // Check if there's an actual API endpoint
         let response, data;
@@ -702,7 +1232,14 @@
           await new Promise(resolve => setTimeout(resolve, 2000));
           data = {
             ok: true,
-            answer: `This is a simulated response to: "${question}". In a real implementation, this would connect to your backend API that processes the question and returns an intelligent response with proper business analysis, research citations, and comprehensive insights.`,
+            answer: `This is a simulated response from **${selectedModel.name}** to: "${question}". In a real implementation, this would connect to your backend API that processes the question using the selected model (${selectedModel.id}) and returns an intelligent response with proper business analysis, research citations, and comprehensive insights.
+
+**Selected Model Details:**
+- **Model**: ${selectedModel.name} (${selectedModel.provider})
+- **Description**: ${selectedModel.description}
+- **API ID**: ${selectedModel.id}
+
+The backend would use this model selection to make the appropriate API call to OpenRouter with the chosen model.`,
             citations: [
               { title: "Sample Business Report", url: "https://example.com/business-report" },
               { title: "Market Analysis Data", url: "https://example.com/market-data" }
@@ -800,7 +1337,7 @@
       const div = document.createElement('div');
       div.className = 'message assistant-message';
       div.id = 'loadingMessage';
-      div.innerHTML = '<div class="loading">🔍 Researching and analyzing your question...</div>';
+      div.innerHTML = `<div class="loading">🔍 Agent is analyzing your question...</div>`;
       chatMessages.appendChild(div);
       scrollToBottom();
     }
@@ -868,16 +1405,17 @@
       
       if (existingChatIndex !== -1) {
         // Update existing chat
-        chatHistoryData[existingChatIndex].messages.push({ question, answer });
+        chatHistoryData[existingChatIndex].messages.push({ question, answer, model: selectedModel.name });
         chatHistoryData[existingChatIndex].lastUpdated = new Date();
       } else {
         // Create new chat
         const newChat = {
           id: currentChatId,
           title: question.length > 50 ? question.substring(0, 50) + '...' : question,
-          messages: [{ question, answer }],
+          messages: [{ question, answer, model: selectedModel.name }],
           createdAt: new Date(),
-          lastUpdated: new Date()
+          lastUpdated: new Date(),
+          modelUsed: selectedModel.name
         };
         chatHistoryData.unshift(newChat);
       }
@@ -892,7 +1430,6 @@
 
     function loadChatHistory() {
       // In a real implementation, you would load from localStorage or an API
-      // For now, we'll start with an empty array
       chatHistoryData = [];
       renderChatHistory();
     }
@@ -1064,6 +1601,58 @@
       closeSidebar(); // Close sidebar on mobile after loading chat
     }
 
+    function addSampleChatHistory() {
+      // Simulate some existing chats with different models
+      const sampleChats = [
+        {
+          id: "sample1",
+          title: "Market analysis for Q4 2024",
+          messages: [
+            {
+              question: "Can you provide a market analysis for Q4 2024?",
+              answer: "Based on current market trends, Q4 2024 shows strong growth potential in tech sectors with emerging opportunities in AI-driven solutions and sustainable technologies. Key indicators suggest consumer confidence is stabilizing while enterprise spending remains robust.",
+              model: "Grok 4 Fast"
+            }
+          ],
+          createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
+          lastUpdated: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+          modelUsed: "Grok 4 Fast"
+        },
+        {
+          id: "sample2",
+          title: "Competitor analysis for SaaS companies",
+          messages: [
+            {
+              question: "What's the competitive landscape for SaaS companies?",
+              answer: "The SaaS market is highly competitive with key players including Salesforce, Microsoft, and emerging unicorns. Market differentiation increasingly depends on AI integration, user experience, and vertical specialization. Price pressure continues as competition intensifies.",
+              model: "DeepSeek Chat v3.1"
+            }
+          ],
+          createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
+          lastUpdated: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+          modelUsed: "DeepSeek Chat v3.1"
+        },
+        {
+          id: "sample3",
+          title: "ROI calculation for marketing campaigns",
+          messages: [
+            {
+              question: "How do I calculate ROI for marketing campaigns?",
+              answer: "ROI for marketing campaigns can be calculated using the formula: (Revenue Generated - Marketing Cost) / Marketing Cost × 100. Consider attribution models, customer lifetime value, and multi-touch attribution for more accurate measurements. Track both short-term conversion and long-term brand impact.",
+              model: "Gemini 2.0 Flash"
+            }
+          ],
+          createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000), // 10 days ago
+          lastUpdated: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
+          modelUsed: "Gemini 2.0 Flash"
+        }
+      ];
+      
+      chatHistoryData = sampleChats;
+      renderChatHistory();
+    }
+
+    // Reset input after form submission
     searchForm.addEventListener('submit', () => {
       setTimeout(() => {
         searchInput.value = '';
@@ -1119,52 +1708,6 @@
       typingActive = false;
       searchInput.setAttribute("placeholder", "");
     });
-
-    // Add some sample chat history for demonstration
-    setTimeout(() => {
-      // Simulate some existing chats
-      const sampleChats = [
-        {
-          id: "sample1",
-          title: "Market analysis for Q4 2024",
-          messages: [
-            {
-              question: "Can you provide a market analysis for Q4 2024?",
-              answer: "Based on current market trends, Q4 2024 shows strong growth potential in tech sectors with emerging opportunities in AI-driven solutions and sustainable technologies. Key indicators suggest consumer confidence is stabilizing while enterprise spending remains robust."
-            }
-          ],
-          createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-          lastUpdated: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
-        },
-        {
-          id: "sample2",
-          title: "Competitor analysis for SaaS companies",
-          messages: [
-            {
-              question: "What's the competitive landscape for SaaS companies?",
-              answer: "The SaaS market is highly competitive with key players including Salesforce, Microsoft, and emerging unicorns. Market differentiation increasingly depends on AI integration, user experience, and vertical specialization. Price pressure continues as competition intensifies."
-            }
-          ],
-          createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
-          lastUpdated: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
-        },
-        {
-          id: "sample3",
-          title: "ROI calculation for marketing campaigns",
-          messages: [
-            {
-              question: "How do I calculate ROI for marketing campaigns?",
-              answer: "ROI for marketing campaigns can be calculated using the formula: (Revenue Generated - Marketing Cost) / Marketing Cost × 100. Consider attribution models, customer lifetime value, and multi-touch attribution for more accurate measurements. Track both short-term conversion and long-term brand impact."
-            }
-          ],
-          createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000), // 10 days ago
-          lastUpdated: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)
-        }
-      ];
-      
-      chatHistoryData = sampleChats;
-      renderChatHistory();
-    }, 1000);
   </script>
 </body>
 </html>
